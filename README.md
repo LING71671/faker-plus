@@ -1,140 +1,95 @@
-# Faker-Plus
+# Faker-Plus 🚀
 
-[中文](#中文) | [English](#english)
+[中文](#-中文) | [English](#-english)
 
 ---
 
-<h2 id="中文">Faker-Plus (增强版虚拟中国公民生成器)</h2>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/faker-js/faker/main/docs/public/logo.png" width="150" alt="Faker-Plus Logo">
+  <br>
+  <b>Faker-Plus: The Most Realistic Chinese Persona Generator</b>
+  <br>
+  <i>Empowering test data with deep logic consistency and AI soul.</i>
+</p>
 
-**Faker-Plus** 是一款建立在官方 `Faker` （Python 著名假数据生成库）之上的高能增强版分支包。它专为严苛的中国大陆（zh_CN）数据测试与大模型推演数据构筑场景而生，完美弥补了原版 Faker 在深度中国本土化场景下的拼凑感与逻辑断层。
+---
 
-从严格映射的“五级行政区划地址”到“手机号与户籍生活轨迹强关联”，再到“无缝内置 AI 大模型直出高度拟真人物相貌与生平故事”，Faker-Plus 为你提供最坚固的、免于脱戏的测试数据底座。
+<h2 id="-中文">🇨🇳 中文</h2>
+
+**Faker-Plus** 是一款建立在官方 `Faker` 之上的高能增强版包装。它专为严苛的中国大陆数据测试场景而生，通过建立**全层级逻辑耦合**（地理、生理、社会、金融），提供最坚固的仿真数据底座。
 
 ### ✨ 核心特性
 
-1. **绝对客观真实性的基础画像引擎**（脱机极速生成）：
-    - **户籍与身份证一致**：身份证前 6 位数字和人物真实随机到的五级 `hometown_address` 产生 100% 强绑定。
-    - **高精度五级细分网格地址生成**：突破传统框架里的“省市区”老三篇。我们引入并自研了基于中国行政村/社区/镇/乡的四、五级字典引擎，配合对应的**邮政编码（邮编）**。
-    - **性别年龄与身份证一致**：生成的 `gender` 和 `age` 严格映射到身份证对应的日期段与校验位。
-    - **通讯与网络属性拉满**：引擎会根据“籍贯/工作地”从三大运营商真实网段库中抽取**主副手机号**，并且配套提供**个人邮箱**属性。
+- **🌍 全量区县级地理仿真**：集成数万条真实邮编记录，实现“省-市-区”降级匹配与邮编精准绑定。
+- **🧬 生效逻辑闭环 (Logic-Coupling)**：
+    - **互联网身份对齐**：用户名与邮箱关联姓名拼音（如：`wang.82@gmail.com`）。
+    - **生长发育曲线**：未成年人（0-18岁）体征严格对准科学发育规律。
+    - **职业-薪资链路**：高管不出现在农村，首席专家强制本科以上学历。
+- **🤖 零依赖 AI 赋能**：无需安装第三方 SDK，通过 `urllib` 直连大模型，一键生成拟真人生故事与头像 Prompt。
+- **⌨️ 生产力 CLI 工具**：全功能命令行交互，支持批量生成、参数滤波及 CSV/Markdown 导出。
 
-2. **🤖 零网络依赖库的 AI 赋能整合**（可配置使用，直连大模型）：
-    - 配置 `api_key`，底层就会利用纯 Python `urllib` 封包，无第三方依赖地接入任意遵循 OpenAI 格式的大模型（例如 DeepSeek / 智谱 / SiliconFlow）。
-    - **系统防御性 Prompt** 强力约束 AI，反向提取**人物一生经历**与**社会关系**，彻底杜绝大模型随机编造的幻觉。
-    - **文本生图直接输出羁绊照**：如果提供 `image_api_key`，系统还能以百毫秒级的速度通过如 FLUX.1 之类的顶级模型直出该角色的高质量真实外貌照片！
+---
 
-### 💻 快速食用指南
+### ⌨️ 命令行交互指南 (CLI Manual)
 
-**安装**
-
-直接覆盖式兼容，请先卸载官方 `Faker` 再安装：
+安装后，你可以通过 `faker-plus` 指令全局调用：
 
 ```bash
-pip uninstall faker
-pip install faker-plus
-```
+# 1. 基础生成 (指定性别与年龄)
+faker-plus persona --gender 女 --age 18-30
 
-**使用方式**
+# 2. 精准滤波 (INTJ 人格且月薪 50k 以上)
+faker-plus persona --mbti INTJ --salary-min 50000
 
-代码层面与官方 `faker` 完全保持高度协同，**导入语法一字不差**：
+# 3. 批量生成并导出为 CSV
+faker-plus persona --count 50 --format csv --output test_data.csv
 
-```python
-import json
-from faker import Faker
-from faker.providers.persona.zh_CN import Provider as PersonaProvider
-
-fake = Faker('zh_CN')
-fake.add_provider(PersonaProvider)
-
-# 1. 纯脱机极速生成一个有明确条件限制的全生命周期人物：
-p_offline = fake.persona(
-    gender="女",
-    age_range=(20, 30),
-    hometown_province="福建",
-    has_second_phone=True
-)
-print(json.dumps(p_offline, ensure_ascii=False, indent=2))
-
-# -------------------------------------------------------------
-
-# 2. 依托 AI 引擎：提供虚构生平和个人真实照片直链
-ai_config = {
-    "api_key": "YOUR_LLM_API_KEY",
-    "base_url": "https://api.deepseek.com/v1/chat/completions",
-    "model": "deepseek-chat",
-    "image_api_key": "YOUR_SILICONFLOW_API_KEY" 
-}
-
-p_ai = fake.persona(
-    use_ai=True,
-    ai_config=ai_config,
-    hometown_province="北京"
-)
+# 4. 同步最新离线数据
+faker-plus sync
 ```
 
 ---
 
-<h2 id="english">Faker-Plus (English Version)</h2>
+<h2 id="-english">🇺🇸 English</h2>
 
-**Faker-Plus** is a supercharged fork of the official `Faker` (the famous Python fake data generator). It is specifically tailored for strict data testing scenarios in Mainland China (`zh_CN`) and for building highly realistic data for Large Language Model (LLM) reasoning, perfectly bridging the logic gaps found in the original Faker's localized scenarios.
-
-From the strictly mapped "Five-Level Administrative Division Address" to the "strong correlation between phone numbers and local life trajectories", and the "seamless built-in AI model for generating highly realistic portraits and life stories", Faker-Plus provides the most robust and immersive testing data foundation.
+**Faker-Plus** is a supercharged wrapper for the official `Faker`. It is specifically designed for high-fidelity Mainland China data generation, bridging logic gaps between geographical, biometric, social, and financial attributes.
 
 ### ✨ Core Features
 
-1. **Absolute Objective Authenticity in Basic Persona Engine** (Offline & Ultra-fast generation):
-    - **Consistent Household Register and ID Card**: The generated ID number's first 6 digits are 100% strictly bound to the randomly generated `hometown_address`.
-    - **High-Precision 5-Level Address Generation**: Breaking through the traditional 3-level framework. We introduced a 4/5-level dictionary engine with local **Postal Codes**.
-    - **Demographic Consistency**: The generated `gender` and `age` are strictly mapped to the ID card's birth date and the parity bit.
-    - **Phone & Email Mapping**: Automatically extracts `primary_phone` from the real network segment dictionary based on the hometown, assigns a `secondary_phone` for work location, and generates a valid **personal email address**.
+- **🌍 County-level Geo Precision**: Integrated tens of thousands of real postal codes with smart fallback matching.
+- **🧬 Deep Relationship Consistency**:
+    - **Identity Alignment**: Usernames/Emails are semantically linked to name Pinyin.
+    - **Pediatric Growth Curves**: Minors' height/weight follow scientific growth patterns.
+    - **Vertical Scaling**: Job titles, education, and salaries are logically coupled by social status.
+- **🤖 Zero-Dependency AI**: Direct connection to LLMs via `urllib` for generating coherent life stories and FLUX-ready image prompts.
+- **⌨️ Powerful CLI**: Full-featured command-line tool for batch generation, advanced filtering, and CSV/MD export.
 
-2. **🤖 Zero-Dependency AI Empowerment** (Configurable, Direct to LLM):
-    - By simply providing an `api_key`, the engine connects to any OpenAI-compatible LLM (e.g., DeepSeek / Zhipu / SiliconFlow) without installing third-party libraries.
-    - **Defensive System Prompt**: Discards AI hallucinations and extracts coherent life experiences and social relations.
-    - **Text-to-Image Avatar Output**: Provide an `image_api_key` (e.g., SiliconFlow) to instantly generate a high-quality real-life portrait of the persona using cutting-edge models like FLUX.1.
+---
 
 ### 💻 Quick Start
 
 **Installation**
-
-Please uninstall the official `Faker` first to avoid conflicts:
-
 ```bash
-pip uninstall faker
 pip install faker-plus
 ```
 
-**Usage**
-
-The import syntax remains exactly the same as the official `faker`:
-
+**Python API**
 ```python
-import json
 from faker import Faker
-from faker.providers.persona.zh_CN import Provider as PersonaProvider
+from faker.providers.persona.zh_CN import Provider
 
 fake = Faker('zh_CN')
-fake.add_provider(PersonaProvider)
+fake.add_provider(Provider)
 
-# 1. Generate a persona offline with specific conditions:
-p_offline = fake.persona(
-    gender="Female",
-    age_range=(20, 30),
-    hometown_province="Fujian",
-    has_second_phone=True
-)
-
-# 2. Advanced: Generate logical life stories and real portraits via AI
-ai_config = {
-    "api_key": "YOUR_LLM_API_KEY",
-    "base_url": "https://api.deepseek.com/v1/chat/completions",
-    "model": "deepseek-chat",
-    "image_api_key": "YOUR_SILICONFLOW_API_KEY"  # Optional
-}
-
-p_ai = fake.persona(
-    use_ai=True,
-    ai_config=ai_config,
-    hometown_province="Beijing"
-)
+# Generate a high-fidelity persona
+p = fake.persona(mbti="INTJ", age_range=(25, 30))
+print(p['name'], p['mbti'], p['social']['job'])
 ```
+
+---
+
+### 📄 License
+Distributed under the MIT License. See `LICENSE.txt` for more information.
+
+---
+<p align="center">Made with ❤️ by LING71671</p>

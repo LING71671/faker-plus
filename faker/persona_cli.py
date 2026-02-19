@@ -6,6 +6,16 @@ import os
 from faker import Faker
 from faker.providers.persona.zh_CN import Provider
 
+BANNER = r"""
+\033[1;36m  _____      _              _____  _             
+ |  ___|    | |            |  __ \| |            
+ | |__  __ _| | _____ _ __ | |__) | |_   _ ___  
+ |  __|/ _` | |/ / _ \ '__||  ___/| | | | / __| 
+ | |  | (_| |   <  __/ |   | |    | | |_| \__ \ 
+ |_|   \__,_|_|\_\___|_|   |_|    |_|\__,_|___/ \033[0m
+\033[1;30m           Realistic Chinese Persona v0.2.0\033[0m
+"""
+
 def format_persona_text(p, i, count):
     """ ANSI formatted text output for humans """
     output = []
@@ -145,6 +155,8 @@ def main():
     args = parser.parse_args()
 
     if args.command == "persona":
+        if not args.json:
+            print(BANNER)
         handle_persona(args)
     elif args.command == "sync":
         handle_sync(args)
