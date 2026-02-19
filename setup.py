@@ -25,7 +25,7 @@ except AttributeError:
     zip_safe = False
 
 setup(
-    name="Faker",
+    name="faker-plus",
     version=VERSION,
     description="Faker is a Python package that generates fake data for you.",
     long_description=README,
@@ -51,14 +51,14 @@ setup(
         "License :: OSI Approved :: MIT License",
     ],
     keywords="faker fixtures data test mock generator",
-    author="joke2k",
-    author_email="joke2k@gmail.com",
-    url="https://github.com/joke2k/faker",
+    author="LING71671",
+    author_email="ling71671@gmail.com",
+    url="https://github.com/LING71671/faker-plus",
     project_urls={
-        "Bug Tracker": "https://github.com/joke2k/faker/issues",
-        "Changes": "https://github.com/joke2k/faker/blob/master/CHANGELOG.md",
+        "Bug Tracker": "https://github.com/LING71671/faker-plus/issues",
+        "Changes": "https://github.com/LING71671/faker-plus/blob/master/CHANGELOG.md",
         "Documentation": "http://faker.rtfd.org/",
-        "Source Code": "https://github.com/joke2k/faker",
+        "Source Code": "https://github.com/LING71671/faker-plus",
     },
     license="MIT License",
     packages=find_packages(exclude=excluded_packages),
