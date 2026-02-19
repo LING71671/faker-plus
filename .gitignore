@@ -53,3 +53,12 @@ nosetests.xml
 *.ipr
 venv/
 .vscode
+
+# --- Local test files & Secrets ---
+.env
+.env.*
+!.env.example
+test_*.txt
+test_*.log
+test_ai_persona.py
+test_full.py
