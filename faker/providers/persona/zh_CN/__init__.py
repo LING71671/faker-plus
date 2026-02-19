@@ -258,11 +258,13 @@ class Provider(PersonaProvider):
             "age": age,
             "birth_date": birth_date.strftime("%Y-%m-%d"),
             "ssn": ssn,
+            "email": self.generator.ascii_free_email(),
             "hometown": {
                 "province": prov_name,
                 "city": city_name,
                 "area": area_name,
-                "address": f"{prov_name}{addr_city}{area_name}{street}"
+                "address": f"{prov_name}{addr_city}{area_name}{street}",
+                "postcode": self.generator.postcode()
             },
             "primary_phone": {
                 "number": primary_phone,
