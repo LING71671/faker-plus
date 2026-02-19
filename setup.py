@@ -31,7 +31,10 @@ setup(
     long_description=README,
     long_description_content_type="text/markdown",
     entry_points={
-        "console_scripts": ["faker=faker.cli:execute_from_command_line"],
+        "console_scripts": [
+            "faker=faker.cli:execute_from_command_line",
+            "faker-plus=faker.persona_cli:main"
+        ],
         "pytest11": ["faker = faker.contrib.pytest.plugin"],
     },
     classifiers=[
