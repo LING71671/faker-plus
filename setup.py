@@ -5,7 +5,7 @@ from pathlib import Path
 from setuptools import find_packages, setup
 
 here = Path(__file__).resolve().parent
-README = (here / "README.rst").read_text(encoding="utf-8")
+README = (here / "README.md").read_text(encoding="utf-8")
 VERSION = (here / "VERSION").read_text(encoding="utf-8").strip()
 
 excluded_packages = ["docs", "tests", "tests.*"]
@@ -29,6 +29,7 @@ setup(
     version=VERSION,
     description="Faker is a Python package that generates fake data for you.",
     long_description=README,
+    long_description_content_type="text/markdown",
     entry_points={
         "console_scripts": ["faker=faker.cli:execute_from_command_line"],
         "pytest11": ["faker = faker.contrib.pytest.plugin"],
