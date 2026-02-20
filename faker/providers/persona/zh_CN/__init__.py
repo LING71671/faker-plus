@@ -449,41 +449,52 @@ class Provider(PersonaProvider):
         if age < 7:
             education_opts = ["幼儿"]
             employment_opts = ["在读"]
-            job_val = "无"
-            salary_val = "￥0"
         elif age < 13:
             education_opts = ["小学"]
             employment_opts = ["在读"]
-            job_val = "学生"
-            salary_val = "￥0"
         elif age < 16:
             education_opts = ["初中"]
             employment_opts = ["在读"]
-            job_val = "学生"
-            salary_val = "￥0"
         elif age < 19:
             education_opts = ["高中", "中专"]
             employment_opts = ["在读"]
-            job_val = "学生"
-            salary_val = "￥0"
         elif age < 23:
             education_opts = ["大专", "本科", "职业技能培训"]
-            employment_opts = ["在读", "在职", "待业"]
-            job_val = "学生" if random.random() < 0.8 else self.generator.job()
-            salary_val = "￥0" if "在读" in employment_opts else f"￥{self.random_int(min=30, max=80) * 100}"
+            employment_opts = ["在职", "待业", "在读"]
         elif age < 60:
-            education_opts = ["大专", "本科", "硕士", "博士", "MBA", "职业技能培训"]
+            education_opts = ["大专", "本科", "硕士", "博士", "MBA"]
             employment_opts = ["在职", "待业", "自由职业"]
-            job_val = self.generator.job()
-            salary_val = f"￥{self.random_int(min=50, max=500) * 100}"
         else: # 60+
             education_opts = ["高中", "大专", "本科", "硕士", "博士"]
             employment_opts = ["退休", "自由职业"]
-            job_val = self.generator.job() if random.random() < 0.2 else "退休人员"
-            salary_val = f"￥{self.random_int(min=30, max=120) * 100}"
 
         education = kwargs.get("education") or self.random_element(education_opts)
         employment = kwargs.get("employment") or self.random_element(employment_opts)
+
+        def get_realistic_job():
+            rare_keywords = [
+                "星探", "经纪人", "体验师", "鉴定师", "潜水", "飞行", "演艺", "教练", 
+                "CEO", "总裁", "总经理", "总监", "首席", "外交", "基金经理", "操盘手", 
+                "架构师", "科学家", "研究员", "高级", "专家", "舰长"
+            ]
+            for _ in range(20):  # Prevent infinite loop
+                candidate = self.generator.job()
+                if not any(kw in candidate for kw in rare_keywords):
+                    return candidate
+                if random.random() < 0.02:  # 2% drop rate for rare jobs
+                    return candidate
+            return self.generator.job()
+
+        # Job deduction based strictly on employment status
+        if employment in ["在读", "全职学生"]:
+            job_val = "无" if age < 7 else "学生"
+        elif employment in ["待业", "待就业", "无业"]:
+            job_val = "无"
+        elif employment == "退休":
+            job_val = "退休人员"
+        else:
+            job_val = get_realistic_job()
+
         job = kwargs.get("job") or job_val
 
         # Logic Hardening: Education/Age Door for Specific Jobs
