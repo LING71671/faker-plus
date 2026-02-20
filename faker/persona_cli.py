@@ -100,6 +100,10 @@ def handle_persona(args):
             print(f"Error: Invalid age format '{args.age}'. Use 'min-max' or 'exact_age'.")
             return
 
+    field_list = None
+    if args.fields:
+        field_list = [f.strip() for f in args.fields.split(',')]
+
     personas = []
     for i in range(args.count):
         if args.count > 10 and not args.json:
@@ -111,7 +115,8 @@ def handle_persona(args):
             hometown_province=args.province,
             mbti=args.mbti,
             education=args.degree,
-            use_ai=args.ai
+            use_ai=args.ai,
+            fields=field_list
         )
         personas.append(persona_data)
 
@@ -121,7 +126,6 @@ def handle_persona(args):
     if args.json:
         print(json.dumps(personas, ensure_ascii=False, indent=2))
     elif args.fields:
-        field_list = args.fields.split(',')
         for i, p in enumerate(personas):
             if args.count > 1 and args.format == 'text':
                 print(f"\033[1;30m--- Persona #{i+1} ---\033[0m")

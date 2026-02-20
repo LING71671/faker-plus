@@ -24,9 +24,38 @@ class Provider(PersonaProvider):
         "韩": "han", "曹": "cao", "许": "xu", "邓": "deng", "萧": "xiao",
         "冯": "feng", "曾": "zeng", "程": "cheng", "蔡": "cai", "潘": "pan",
         "袁": "yuan", "于": "yu", "董": "dong", "余": "yu", "苏": "su",
-        "叶": "ye", "吕": "lv", "魏": "wei", "潘": "pan", "田": "tian",
-        "杜": "du", "丁": "ding", "沈": "shen", "任": "ren", "姜": "jiang"
+        "叶": "ye", "吕": "lv", "魏": "wei", "蒋": "jiang", "田": "tian",
+        "杜": "du", "丁": "ding"
     }
+
+    def _filter_by_fields(self, data: dict, fields: list) -> dict:
+        """
+        根据用户指定的 fields 列表过滤生成的画像字典，支持诸如 'hometown.postcode' 等嵌套路径。
+        """
+        filtered_p = {}
+        for f in fields:
+            f = f.strip()
+            if not f:
+                continue
+            
+            parts = f.split('.')
+            current_src = data
+            current_dest = filtered_p
+            
+            valid = True
+            for i, part in enumerate(parts):
+                if isinstance(current_src, dict) and part in current_src:
+                    if i == len(parts) - 1:
+                        current_dest[part] = current_src[part]
+                    else:
+                        if part not in current_dest:
+                            current_dest[part] = {}
+                        current_dest = current_dest[part]
+                        current_src = current_src[part]
+                else:
+                    valid = False
+                    break
+        return filtered_p
 
     @classmethod
     def _load_areas(cls) -> List[Dict]:
@@ -100,6 +129,7 @@ class Provider(PersonaProvider):
         work_city: Optional[str] = None,
         use_ai: bool = False,
         ai_config: Optional[Dict] = None,
+        fields: Optional[List[str]] = None,
         **kwargs
     ) -> Dict[str, Any]:
         """
@@ -655,6 +685,8 @@ class Provider(PersonaProvider):
                 "province": work_prov_name,
                 "city": w_city
             }
+        elif not has_second_phone and "secondary_phone" in result:
+            del result["secondary_phone"]
 
         # 8. Add AI story
         if use_ai:
@@ -670,5 +702,8 @@ class Provider(PersonaProvider):
                 img_url = generate_ai_image(result["image_prompt"], img_key)
                 if img_url:
                     result["avatar_url"] = img_url
+
+        if fields:
+            return self._filter_by_fields(result, fields)
 
         return result
