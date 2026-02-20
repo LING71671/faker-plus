@@ -5,7 +5,7 @@
 ---
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/faker-js/faker/main/docs/public/logo.png" width="150" alt="Faker-Plus Logo">
+  
   <br>
   <b>Faker-Plus: The Most Realistic Chinese Persona Generator</b>
   <br>
