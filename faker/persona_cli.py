@@ -16,6 +16,15 @@ BANNER = r"""
 \033[1;30m           Realistic Chinese Persona v0.2.0\033[0m
 """
 
+def get_nested_value(data, path):
+    """ Helper to get value from nested dict using dot notation """
+    for key in path.split('.'):
+        if isinstance(data, dict):
+            data = data.get(key)
+        else:
+            return None
+    return data
+
 def format_persona_text(p, i, count):
     """ ANSI formatted text output for humans """
     output = []
@@ -111,6 +120,16 @@ def handle_persona(args):
 
     if args.json:
         print(json.dumps(personas, ensure_ascii=False, indent=2))
+    elif args.fields:
+        field_list = args.fields.split(',')
+        for i, p in enumerate(personas):
+            if args.count > 1 and args.format == 'text':
+                print(f"\033[1;30m--- Persona #{i+1} ---\033[0m")
+            values = []
+            for f in field_list:
+                val = get_nested_value(p, f.strip())
+                values.append(f"{f.strip()}: {val}")
+            print(" | ".join(values))
     elif args.format == 'csv':
         export_csv(personas, args.output or "personas.csv")
     elif args.format == 'md':
@@ -142,6 +161,7 @@ def main():
     persona_parser.add_argument("--degree", type=str, help="Education level")
     persona_parser.add_argument("--ai", action="store_true", help="Enable AI Life Story")
     persona_parser.add_argument("-j", "--json", action="store_true", help="Output in JSON to stdout")
+    persona_parser.add_argument("-k", "--fields", type=str, help="Specify output fields, comma-separated (e.g. name,ssn,primary_phone.number)")
     persona_parser.add_argument("-f", "--format", choices=['text', 'csv', 'md'], default='text', help="Output format")
     persona_parser.add_argument("-o", "--output", type=str, help="Output file path (for csv/md)")
 
